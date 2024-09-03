@@ -1,5 +1,7 @@
 from app import db
+from sqlalchemy import Column, String
 import uuid
+
 
 class User(db.Model):
     """
@@ -11,11 +13,13 @@ class User(db.Model):
         password (str): The password of the user.
         role (str): The role of the user.
     """
-    id = db.Column(db.String(36), primary_key=True, default=str(uuid.uuid4()))
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), nullable=False)
-    password = db.Column(db.String(120), nullable=False)
-    role = db.Column(db.String(20), nullable=False, default='user')
+
+    id = Column(String(36), primary_key=True, default=str(uuid.uuid4()))
+    username = Column(String(80), unique=True, nullable=False)
+    email = Column(String(120), nullable=False)
+    password = Column(String(120), nullable=False)
+    role = Column(String(20), nullable=False, default="user")
+
 
 class Book(db.Model):
     """
@@ -28,7 +32,8 @@ class Book(db.Model):
         isbn (str): The ISBN number of the book.
 
     """
-    id = db.Column(db.String(36), primary_key=True, default=str(uuid.uuid4()))
-    title = db.Column(db.String(120), nullable=False)
-    author = db.Column(db.String(80), nullable=False)
-    isbn = db.Column(db.String(13), unique=True, nullable=False)
+
+    id = Column(String(36), primary_key=True, default=str(uuid.uuid4()))
+    title = Column(String(120), nullable=False)
+    author = Column(String(80), nullable=False)
+    isbn = Column(String(13), unique=True, nullable=False)

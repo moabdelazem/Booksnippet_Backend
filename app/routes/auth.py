@@ -5,9 +5,10 @@ from app.models.models import User
 from app import db
 
 #  Create a Blueprint for the auth routes
-bp = Blueprint('auth', __name__, url_prefix='/auth')
+bp = Blueprint("auth", __name__, url_prefix="/auth")
 
-@bp.route('/register', methods=['POST'])
+
+@bp.route("/register", methods=["POST"])
 def register():
     """
     Registers A New User.
@@ -26,34 +27,40 @@ def register():
     # Get the user data from the request
     data = request.get_json()
     # Hash the user's password
-    hashed_password = generate_password_hash(data['password'])
+    hashed_password = generate_password_hash(data["password"])
     # Create a new user with the provided data
-    new_user = User(username=data['username'], email=data['email'], password=hashed_password, role=data['role'])
+    new_user = User(
+        username=data["username"],
+        email=data["email"],
+        password=hashed_password,
+        role=data["role"],
+    )
     # Add the new user to the database
     db.session.add(new_user)
-    # Commit the changes to the database 
+    # Commit the changes to the database
     db.session.commit()
     # Return a success message
-    return jsonify({'message': 'User created successfully'}), 200
+    return jsonify({"message": "User created successfully"}), 200
 
-@bp.route('/login', methods=['POST'])
+
+@bp.route("/login", methods=["POST"])
 def login():
     """
     Authenticates a user and generates an access token.
 
     Returns:
-        A JSON response containing the access token if the user is authenticated, 
+        A JSON response containing the access token if the user is authenticated,
         or a JSON response with an error message if the credentials are invalid.
     """
     # Get the user data from the request
     data = request.get_json()
     # Check if the user exists and the password is correct
-    user = User.query.filter_by(username=data['username']).first()
+    user = User.query.filter_by(username=data["username"]).first()
     # If the user exists and the password is correct, generate an access token
-    if user and check_password_hash(user.password, data['password']):
+    if user and check_password_hash(user.password, data["password"]):
         # Create an access token for the user
         access_token = create_access_token(identity=user.id)
         #  Return the access token
-        return jsonify({'access_token': access_token}), 200
+        return jsonify({"access_token": access_token}), 200
     # If the user does not exist or the password is incorrect, return an error message
-    return jsonify({'message': 'Invalid credentials'}), 401
+    return jsonify({"message": "Invalid credentials"}), 401
