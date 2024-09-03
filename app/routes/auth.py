@@ -52,15 +52,34 @@ def login():
         A JSON response containing the access token if the user is authenticated,
         or a JSON response with an error message if the credentials are invalid.
     """
+    # # Get the user data from the request
+    # data = request.get_json()
+    # # Check if the user exists and the password is correct
+    # user = User.query.filter_by(username=data["username"]).first()
+    # # If the user exists and the password is correct, generate an access token
+    # if user and check_password_hash(user.password, data["password"]):
+    #     # Create an access token for the user
+    #     access_token = create_access_token(identity=user.id)
+    #     #  Return the access token
+    #     return jsonify({"access_token": access_token}), 200
+    # # If the user does not exist or the password is incorrect, return an error message
+    # return jsonify({"message": "Invalid credentials"}), 401
+    #    """
+    # Authenticates a user and generates an access token.
+    # """
     # Get the user data from the request
     data = request.get_json()
-    # Check if the user exists and the password is correct
+
+    # Retrieve the user from the database
     user = User.query.filter_by(username=data["username"]).first()
-    # If the user exists and the password is correct, generate an access token
-    if user and check_password_hash(user.password, data["password"]):
+
+    if user is None:
+        return jsonify({"message": "User not found"}), 404
+
+    # Check if the password is correct
+    if check_password_hash(user.password, data["password"]):
         # Create an access token for the user
         access_token = create_access_token(identity=user.id)
-        #  Return the access token
         return jsonify({"access_token": access_token}), 200
-    # If the user does not exist or the password is incorrect, return an error message
+
     return jsonify({"message": "Invalid credentials"}), 401
